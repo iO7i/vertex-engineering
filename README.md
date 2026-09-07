@@ -1,6 +1,6 @@
 # Vertex Engineering
 
-Selected architecture, reliability patterns, and engineering lessons from building Vertex, a private commerce intelligence system.
+Selected architecture, reliability patterns, and engineering lessons from Vertex, designed and built by Hosam Al-Khairat.
 
 > Evidence is not reasoning.  
 > Reasoning is not authority.  
@@ -9,9 +9,9 @@ Selected architecture, reliability patterns, and engineering lessons from buildi
 
 ## What is Vertex?
 
-Vertex is a private commercial system for operating commerce applications on shared foundations. Its public architectural record is more useful when it is precise about boundaries than when it tries to reveal implementation detail.
+Vertex is a private multi-tenant commerce intelligence and execution platform. It integrates external commerce systems across shared evidence, reasoning, authority, and execution infrastructure. The private implementation includes provider-specific integration surfaces for Zid and Salla.
 
-The system separates provider-derived evidence, interpretation, authorization, durable work, provider interaction, and verification. That separation is the central design decision documented here.
+I designed Vertex to separate provider-derived evidence, interpretation, authorization, durable work, provider interaction, and verification. That separation is the central engineering decision documented here. The commercial implementation remains private.
 
 ## Why this repository exists
 
@@ -100,9 +100,30 @@ Detailed responsibility boundaries appear in [evidence, reasoning, and authority
 - Derived serving state should be rebuildable from upstream authoritative state.
 - Failure cases deserve named contracts, deterministic tests, and recovery paths.
 
+## Engineering surface
+
+The private implementation includes the following high-level surfaces:
+
+| Surface | Role |
+| --- | --- |
+| Contracts | Shared, versioned vocabulary for tenancy, lifecycle, evidence, authority, and application integration. |
+| Kernel | Provider communication primitives, lifecycle/session support, webhook handling, and bounded readback. |
+| Platforms | Canonical mapping, provider normalization, and shared transport/data-plane capabilities. |
+| Identity | Human and workload identity boundaries. |
+| Merchant Data Plane | Canonical observations, evidence, receipts, coverage, and reconciliation state. |
+| Brain | Versioned interpretation and merchant-intelligence artifacts derived from evidence. |
+| Serving Plane | Derived, product-facing intelligence snapshots and prepared reads. |
+| Control Plane | Current-session, membership, installation, generation, policy, and entitlement decisions. |
+| Durable workflow infrastructure | Retryable, resumable workflow execution for long-running provider work. |
+| Provider integrations | Zid and Salla adapters and provider-specific lifecycle/read paths. |
+
+**Evidence vocabulary.** **IMPLEMENTED** means present in the private Vertex codebase. **VALIDATED** means exercised through deterministic, integration, provider, or journey evidence available for the relevant scope. **DESIGN PRINCIPLE** is an architectural rule; its coverage may vary by application. These terms are used selectively so they retain meaning.
+
+**IMPLEMENTED:** the shared Contracts catalog contains 13 cataloged application entries. **VALIDATED:** the codebase includes provider-specific Zid and Salla test paths and browser-journey coverage in representative application work. These are engineering-surface indicators only; they are not customer, uptime, coverage, or release-maturity claims.
+
 ## Application suite
 
-The local implementation snapshot contains worktrees or integration evidence for application areas including SEO, Store Audit, Joho, CRO, Upsell/CrossSell, Reviews, Loyalty, Refer, Recur, Social, Signals, Digital Downloads, Matrix, and Profit. This is an architectural observation, not a feature inventory or a statement that every application has identical maturity.
+Vertex application domains include SEO, Store Audit, Joho, CRO, Upsell/CrossSell, Reviews, Loyalty, Refer, Recur, Social, Signals, Digital Downloads, Matrix, and Profit. The names describe documented application domains, not a feature inventory; they do not imply identical release maturity or implementation coverage.
 
 The intended suite boundary is consistent: an application contributes its domain behavior; it should not independently rebuild identity, provider authentication, provider semantics, canonical merchant evidence, shared contracts, authority policy, or durable-work primitives.
 
@@ -127,12 +148,34 @@ media/         safe, inspectable source diagrams; no product screenshots
 
 ## Private implementation boundary
 
-The private implementation remains private. This repository intentionally omits implementation code, raw schemas and migrations, credentials, provider payloads, real tenant identifiers, private URLs, operational dashboards, prompts, model routing, and detailed security-sensitive surfaces. The diagrams are conceptual and the pseudocode is newly written.
+The commercial implementation remains private. This repository intentionally omits implementation code, raw schemas and migrations, credentials, provider payloads, real tenant identifiers, private URLs, operational dashboards, prompts, model routing, and detailed security-sensitive surfaces. The diagrams are conceptual and the pseudocode is newly written.
 
-## Relationship to Faultline
+## Two failure traces
 
-No public Faultline repository was verified while this dossier was assembled, so this repository intentionally includes no link. If a public Faultline project is released later, it may describe how revision-bound authority, evidence provenance, and readback verification were generalized into a separate industrial AI assurance setting. It would not contain or depend on Vertex's commercial implementation.
+### Ambiguous provider completion
 
-## Scope and evidence note
+```text
+T0  authorize
+T1  dispatch
+T2  provider commits
+T3  connection fails before acknowledgement is recorded
+T4  workflow resumes
+```
 
-This dossier was based on an available local implementation snapshot, including shared Contracts, Control Plane, Kernel, Platform/MDP, Identity, and representative application worktrees. It documents supported architectural direction and observed engineering patterns, not confidential production status, customer count, availability metrics, or universal feature coverage. Where implementation evidence did not establish a claim, this dossier either omits it or calls it a design principle.
+Blind retry is incorrect because T2 may already have created the effect. Blind success is incorrect because the system has not observed the result. The workflow retains bounded progress, then reconciliation/readback determines whether the expected provider state exists before another mutation is attempted.
+
+### Stale installation generation
+
+```text
+G17 worker starts
+merchant installation lifecycle changes
+G18 becomes current
+G17 worker resumes
+G17 authority is rejected
+```
+
+Installation identity alone is not enough: the prior generation's authority must not silently survive a lifecycle change. Generation fencing makes the current lifecycle revision part of the side-effect boundary.
+
+## Scope note
+
+This public record documents selected decisions from the system I built. It intentionally makes no confidential claims about customer count, availability, production status, or universal feature coverage. Where a mechanism is not established as a shared implementation surface, this repository describes it as a design principle rather than a guarantee.

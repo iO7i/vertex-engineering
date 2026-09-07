@@ -40,7 +40,7 @@ Unit tests target deterministic rules: contract parsing, scope validation, polic
 
 ### Contract and database
 
-Shared Contracts are a first-class compatibility boundary. The local implementation snapshot contains contract tests, lifecycle/merchant-data architecture checks, PostgreSQL-backed tests, migration verification, and consumer-boundary checks across representative repositories. The public claim is limited to the presence of those engineering practices in the reviewed snapshot; no pass counts or release status are published.
+Shared Contracts are a first-class compatibility boundary. Vertex includes contract tests, lifecycle/merchant-data architecture checks, PostgreSQL-backed tests, migration verification, and consumer-boundary checks across representative repositories. This documents the engineering practice without asserting pass counts or current release status.
 
 ### Scenario and journey evidence
 

@@ -25,7 +25,7 @@ INSTALLATION                         INSTALLATION
 human authority session            app / capability context
 ```
 
-The available implementation evidence includes explicit installation-authority records, installation generations, human authority sessions, account and installation memberships, policy revisions, and scoped workload behavior. This document describes their logical role, not their storage schema.
+Vertex includes explicit installation-authority records, installation generations, human authority sessions, account and installation memberships, policy revisions, and scoped workload behavior. This document describes their logical role, not their storage schema.
 
 ## Distinctions that matter
 
@@ -63,7 +63,7 @@ human -> central identity/session -> account membership -> store selection
       -> merchant context
 ```
 
-The implementation snapshot includes checks for active sessions and memberships at action evaluation, along with identity security-event handling. This supports a fail-closed approach: if current state cannot establish the required relationship, the action is not admitted. This public dossier intentionally does not publish identity-provider configuration, session formats, or revocation internals.
+Vertex checks active sessions and memberships at action evaluation, alongside identity security-event handling. This supports a fail-closed approach: if current state cannot establish the required relationship, the action is not admitted. This public dossier intentionally does not publish identity-provider configuration, session formats, or revocation internals.
 
 ## Design questions
 

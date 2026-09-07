@@ -10,7 +10,7 @@ INSTALLATION
     +-- generation 18   CURRENT
 ```
 
-The available Control Plane and application evidence includes installation generations and tests/migrations concerned with reconciling or retiring superseded installation authority. This documentation abstracts the mechanism into a public principle.
+Vertex's Control Plane and application code include installation generations and tests/migrations concerned with reconciling or retiring superseded installation authority. This documentation abstracts the mechanism into a public principle.
 
 ```text
 OLD AUTHORITY MUST NOT SILENTLY SURVIVE THE GENERATION CHANGE.

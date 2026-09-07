@@ -33,7 +33,7 @@ NEW EVIDENCE
 
 ## Evidence: what was observed?
 
-Evidence is a bounded claim about external or system state with context: tenant/store scope, source, time, coverage, provenance or receipt references, and quality conditions such as missingness, staleness, or conflict. In the implementation snapshot reviewed for this dossier, MDP concepts include evidence snapshots, coverage, reconciliation state, metric-computation receipts, evidence digests, and readiness assessments.
+Evidence is a bounded claim about external or system state with context: tenant/store scope, source, time, coverage, provenance or receipt references, and quality conditions such as missingness, staleness, or conflict. Vertex's MDP includes evidence snapshots, coverage, reconciliation state, metric-computation receipts, evidence digests, and readiness assessments.
 
 An evidence artifact should be able to say "this is unavailable," "this is stale," or "these sources conflict." Suppressing a conclusion can be more correct than presenting a confident but unsupported one.
 
@@ -52,7 +52,7 @@ BRAIN DOES NOT SELF-AUTHORIZE.
 
 ## Authority: may this happen now?
 
-Authority answers a different question: whether a particular principal or workload may perform a particular action for a particular scope at the time of admission. The Control Plane evidence reviewed here evaluates current session and membership state, role policy, installation identity, current generation, and action/capability policy rather than accepting an old recommendation as a permit.
+Authority answers a different question: whether a particular principal or workload may perform a particular action for a particular scope at the time of admission. Vertex's Control Plane evaluates current session and membership state, role policy, installation identity, current generation, and action/capability policy rather than accepting an old recommendation as a permit.
 
 Conceptually, a permit is bounded by:
 

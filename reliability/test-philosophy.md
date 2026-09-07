@@ -20,9 +20,9 @@ Vertex favors tests that make boundary failures explicit. A polished function-le
 
 Many serious failures depend on timing. A deterministic harness can force the sequence: request dispatched, provider commits, response lost, retry begins; or worker starts under generation N, lifecycle advances to N+1, worker resumes. These tests make the intended containment observable without relying on random timing in a live environment.
 
-## Testing evidence observed in the implementation snapshot
+## Testing surfaces in Vertex
 
-The private worktrees reviewed for this dossier include unit tests, integration tests, PostgreSQL-backed paths, migrations tests, contract/lifecycle tests, provider-oriented tests, browser journeys, Temporal replay/restart verification, and certification scripts in representative components. That evidence supports describing a layered test philosophy. It does not establish an aggregate coverage percentage, universal application adoption, or a permanent release state.
+Vertex includes unit tests, integration tests, PostgreSQL-backed paths, migration tests, contract/lifecycle tests, provider-oriented tests, browser journeys, Temporal replay/restart verification, and certification scripts in representative components. These surfaces support a layered test philosophy; they do not establish an aggregate coverage percentage, universal application adoption, or a permanent release state.
 
 ## Failure story: happy-path authorization
 

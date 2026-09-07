@@ -49,7 +49,7 @@ Readback becomes new evidence because it updates what the system can responsibly
 
 Verification should bind expected state to the operation and scope that created it. Readback should be normalized and provenance-aware. Comparisons should account for the supported provider capability and consistency behavior rather than using a generic equality test across all provider objects.
 
-The implementation snapshot contains provider-readback interfaces that bind source reads to scope, installation generation, purpose, and response receipts. That supports the architecture; detailed comparison logic and provider payloads are intentionally excluded.
+Vertex's provider-readback interfaces bind source reads to scope, installation generation, purpose, and response receipts. That supports the architecture; detailed comparison logic and provider payloads are intentionally excluded.
 
 ## Failure story: a lost acknowledgement
 

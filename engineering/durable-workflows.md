@@ -37,7 +37,7 @@ Durability prevents loss of workflow progress; it does not prove that an externa
 
 ## Replay and compatibility
 
-Long-lived workflow histories introduce a versioning problem: changing code must not reinterpret existing history unpredictably. The implementation snapshot includes replay-oriented verification and explicit retention of selected compatibility paths. The public lesson is modest: workflow code should evolve with history compatibility in mind, and release evidence should include relevant replay or compatibility checks when a system uses durable execution.
+Long-lived workflow histories introduce a versioning problem: changing code must not reinterpret existing history unpredictably. Vertex includes replay-oriented verification and explicit retention of selected compatibility paths. The public lesson is modest: workflow code should evolve with history compatibility in mind, and release evidence should include relevant replay or compatibility checks when a system uses durable execution.
 
 ## Authority on resume
 

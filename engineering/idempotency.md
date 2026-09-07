@@ -36,7 +36,7 @@ At T5, a retry cannot assume failure. It should determine what is known about th
 
 ## Event delivery
 
-The implementation snapshot includes a per-subscription idempotency abstraction that records successful event handling after the handler completes. This deliberately preserves at-least-once behavior: a crash before the success mark permits re-delivery instead of silently losing the event. It also means handlers must tolerate a rare double-run; deduplication is useful, but cannot be the sole correctness mechanism.
+Vertex includes a per-subscription idempotency abstraction that records successful event handling after the handler completes. This deliberately preserves at-least-once behavior: a crash before the success mark permits re-delivery instead of silently losing the event. It also means handlers must tolerate a rare double-run; deduplication is useful, but cannot be the sole correctness mechanism.
 
 ## What an idempotency boundary needs
 
