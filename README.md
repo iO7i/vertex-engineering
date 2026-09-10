@@ -23,6 +23,12 @@ This repository is an architecture dossier, not a runnable copy of the private V
 
 Faultline demonstrates stale-authority rejection and acknowledgement-loss reconciliation against a synthetic simulator. That is evidence for the published engineering primitives, not a production certification of Vertex, its providers, or its commercial applications.
 
+## Engineering notes
+
+- [Why `/version` can lie](notes/01-deployment-provenance.md)
+- [Logout is an authority problem](notes/02-logout-is-authority.md)
+- [One intended effect under ambiguous completion](notes/03-one-intended-effect.md)
+
 ## Architecture
 
 ```text
