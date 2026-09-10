@@ -17,6 +17,12 @@ EVIDENCE != REASONING != AUTHORITY != ORCHESTRATION != EXECUTION != VERIFICATION
 
 These are different questions: what happened, what does it mean, what should be done, may it happen, how does work progress through failure, and did the intended effect become true? Vertex gives those questions different architectural owners.
 
+## How to verify the public claims
+
+This repository is an architecture dossier, not a runnable copy of the private Vertex implementation. Its public evidence is the linked design record, failure model, and certification strategy. The independently runnable proof of the generalized reliability primitives lives in [Faultline](https://github.com/iO7i/faultline): after `pnpm install --frozen-lockfile`, run `pnpm demo`.
+
+Faultline demonstrates stale-authority rejection and acknowledgement-loss reconciliation against a synthetic simulator. That is evidence for the published engineering primitives, not a production certification of Vertex, its providers, or its commercial applications.
+
 ## Architecture
 
 ```text
