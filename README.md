@@ -1,6 +1,6 @@
 # Vertex Engineering
 
-Selected architecture, reliability patterns, and engineering lessons from Vertex, designed and built by Hosam Al-Khairat.
+Selected architecture, reliability patterns, and engineering lessons from Vertex, designed and built by Hosam Talbi Al-Khairat.
 
 Vertex is a private multi-tenant commerce intelligence and execution platform. It integrates external commerce systems, including Zid and Salla, across shared evidence, reasoning, authority, and execution infrastructure. The commercial implementation remains private; this repository documents selected engineering decisions behind it.
 
@@ -207,5 +207,5 @@ The diagrams are conceptual. Example pseudocode is newly written to explain engi
 
 This dossier does not claim universal correctness, perfect provider consistency, exactly-once execution, zero failure, uniform maturity across applications, customer count, availability, SLA performance, or complete production status.
 
-**Hosam Al-Khairat**
+**Hosam Talbi Al-Khairat**
 Builder of Vertex
