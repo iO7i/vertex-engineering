@@ -29,6 +29,14 @@ Faultline demonstrates stale-authority rejection and acknowledgement-loss reconc
 - [Logout is an authority problem](notes/02-logout-is-authority.md)
 - [One intended effect under ambiguous completion](notes/03-one-intended-effect.md)
 
+## Engineering incidents
+
+Vertex is a commercial system, but some of the engineering lessons behind it are worth sharing.
+
+These deliberately sanitized notes document selected correctness and reliability failures: the failed invariant, the changed mental model, and the systemic correction.
+
+→ [Read the incident notes](incidents/README.md)
+
 ## Architecture
 
 ```text
