@@ -1,27 +1,44 @@
 # Vertex Engineering
 
-Selected architecture, reliability patterns, and engineering lessons from Vertex, designed and built by Hosam Talbi Al-Khairat.
+Vertex is a private multi-tenant commerce intelligence and execution platform. It integrates external commerce systems, including Zid and Salla, with shared data, reasoning, identity, workflow, and provider-integration layers. This repository contains selected engineering decisions and failure analyses; the commercial implementation remains private.
 
-Vertex is a private multi-tenant commerce intelligence and execution platform. It integrates external commerce systems, including Zid and Salla, across shared evidence, reasoning, authority, and execution infrastructure. The commercial implementation remains private; this repository documents selected engineering decisions behind it.
+## Start here
 
-## Thesis
+This repository is an architecture dossier, not a runnable copy of Vertex. The generalized reliability patterns have an independently runnable reference implementation in [Faultline](https://github.com/iO7i/faultline):
 
-> Evidence is not reasoning.
-> Reasoning is not authority.
-> Authority is not execution.
-> Execution success is not outcome verification.
-
-```text
-EVIDENCE != REASONING != AUTHORITY != ORCHESTRATION != EXECUTION != VERIFICATION
+```bash
+pnpm install --frozen-lockfile
+pnpm demo
 ```
 
-These are different questions: what happened, what does it mean, what should be done, may it happen, how does work progress through failure, and did the intended effect become true? Vertex gives those questions different architectural owners.
+Faultline runs a synthetic simulator that rejects stale authority and reconciles a lost acknowledgement. Those results support the published patterns; they do not certify Vertex, its providers, or its commercial applications.
 
-## How to verify the public claims
+## The failure case
 
-This repository is an architecture dossier, not a runnable copy of the private Vertex implementation. Its public evidence is the linked design record, failure model, and certification strategy. The independently runnable proof of the generalized reliability primitives lives in [Faultline](https://github.com/iO7i/faultline): after `pnpm install --frozen-lockfile`, run `pnpm demo`.
+Suppose a provider accepts a mutation, then the connection drops before Vertex records the response:
 
-Faultline demonstrates stale-authority rejection and acknowledgement-loss reconciliation against a synthetic simulator. That is evidence for the published engineering primitives, not a production certification of Vertex, its providers, or its commercial applications.
+```text
+T0  operation is authorized
+T1  worker sends provider mutation
+T2  provider commits it
+T3  connection fails before the acknowledgement is recorded
+T4  workflow resumes
+```
+
+Blind retry can apply the effect twice. Assuming success is also unsafe because the intended outcome has not been checked. The design records operation identity, uses provider idempotency where available, reads back state, and keeps retry behavior bounded.
+
+Authority has a similar lifecycle problem. A worker from an earlier installation generation must not remain authorized after the current generation changes:
+
+```text
+Generation 17 starts
+          |
+          | installation lifecycle changes
+          v
+Generation 18 becomes current
+          |
+          v
+Generation 17 resumes -> provider mutation rejected
+```
 
 ## Engineering notes
 
@@ -33,7 +50,7 @@ Faultline demonstrates stale-authority rejection and acknowledgement-loss reconc
 
 Vertex is a commercial system, but some of the engineering lessons behind it are worth sharing.
 
-These deliberately sanitized notes document selected correctness and reliability failures: the failed invariant, the changed mental model, and the systemic correction.
+These deliberately sanitized notes document selected correctness and reliability failures, the changed mental model, and the resulting platform-level fixes.
 
 → [Read the incident notes](incidents/README.md)
 
@@ -112,53 +129,20 @@ These deliberately sanitized notes document selected correctness and reliability
                                        +--------------------> NEXT DECISION CYCLE
 ```
 
-The architectural purpose is separation: provider observations become evidence; evidence informs reasoning; reasoning may propose; current authority admits or rejects an action; durable work makes bounded progress; readback turns an observed result into new evidence.
-
-## Ambiguous completion
-
-```text
-T0  operation is authorized
-T1  worker dispatches provider mutation
-T2  provider commits the mutation
-T3  connection fails before Vertex records acknowledgement
-T4  durable workflow resumes
-```
-
-At T4, blind retry is incorrect because the provider may have executed the effect twice. Blind success is also incorrect because Vertex has not established that the intended effect exists. The system retains bounded progress, then uses operation identity, idempotency where supported, readback, and reconciliation to decide how work can safely continue.
-
-## Generation fencing
-
-```text
-Generation 17 worker starts
-          |
-          | installation lifecycle changes
-          v
-Generation 18 becomes current
-          |
-          v
-old Generation 17 worker resumes -> attempts provider mutation -> REJECTED
-```
-
-Installation identity alone is insufficient. Authority granted under an earlier lifecycle generation must not silently survive into the current one.
-
-```text
-installation = same
-generation   = different
-authority    = stale
-```
+Provider observations enter the Merchant Data Plane as evidence. The Brain interprets that data, applications propose work, and the Control Plane decides whether the current principal may perform it. Durable workflow carries admitted work through failure. Readback turns the observed result into new data for the next cycle.
 
 ## Core planes
 
-| Plane | Primary question | It is not |
+| Plane | Primary question | What it does not provide |
 | --- | --- | --- |
-| Merchant Data Plane (MDP) | What is true, and what evidence supports that claim? | A UI cache or execution authority |
-| Brain | What does the available evidence mean? | Provider mutation authority |
+| Merchant Data Plane (MDP) | What is true, and what supports that claim? | UI cache or mutation permission |
+| Brain | What does the available evidence mean? | Provider mutation permission |
 | Serving Plane | What derived state should products read efficiently? | Canonical merchant truth |
-| Control Plane | May this principal perform this operation in this context? | A recommendation engine |
-| Durable execution | How does admitted work make progress across failure? | Evidence or authorization authority |
+| Control Plane | May this principal perform this operation here? | Recommendation logic |
+| Durable execution | How does admitted work make progress across failure? | Data or authorization |
 | Kernel | How do we communicate safely with a provider? | Merchant truth or business intelligence |
 | Platforms | How does a canonical Vertex operation map to a provider? | Application-specific business logic |
-| Contracts | How does the system agree on versioned meaning? | Runtime authority |
+| Contracts | How does the system agree on versioned meaning? | Runtime permission |
 | Identity | Who is acting, and in which merchant context? | Authorization by itself |
 
 ## Public evidence
@@ -172,22 +156,16 @@ This repository exposes the engineering record without exposing the commercial i
 
 **IMPLEMENTED** means present in the private Vertex implementation. **VALIDATED** means exercised through evidence appropriate to the relevant scope. **DESIGN PRINCIPLE** denotes an architectural rule whose implementation coverage may vary by application.
 
-## Reliability principles
+## Rules the system relies on
 
 ```text
-Retries are unavoidable.
-Duplicate effects require explicit containment.
-
-External acknowledgement is not equivalent to business outcome.
-Stale authority must fail closed.
-Previous installation generations must not silently remain authorized.
-Canonical evidence and derived serving state are different things.
-A model recommendation does not create execution authority.
-Workflow durability does not create authorization.
-Provider side effects require reconciliation.
-Failure paths deserve first-class tests.
-Version compatibility is part of correctness.
-Deployment provenance is part of correctness.
+Retries are unavoidable, so duplicate effects need containment.
+Provider acknowledgement is not the business outcome until readback or reconciliation confirms it.
+Stale authority and old installation generations are rejected.
+Canonical merchant data and derived serving state are kept separate.
+A model recommendation does not grant permission, and durable workflow does not grant permission.
+Provider side effects are followed by reconciliation.
+Failure paths, version compatibility, and deployment provenance are tested as correctness concerns.
 ```
 
 ## Deeper reading
