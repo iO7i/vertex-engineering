@@ -193,5 +193,4 @@ The diagrams are conceptual. Example pseudocode is newly written to explain engi
 
 This dossier does not claim universal correctness, perfect provider consistency, exactly-once execution, zero failure, uniform maturity across applications, customer count, availability, SLA performance, or complete production status.
 
-**Hosam Talbi Al-Khairat**
-Builder of Vertex
+Built by Hosam.
